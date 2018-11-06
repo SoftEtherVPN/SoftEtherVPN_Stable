@@ -2684,7 +2684,7 @@ bool RsaCheck()
 	BIO *bio;
 	char errbuf[MAX_SIZE];
 	UINT size = 0;
-	UINT bit = 4096;
+	UINT bit = RSA_KEY_SIZE;
 	// Validate arguments
 
 	// Key generation
