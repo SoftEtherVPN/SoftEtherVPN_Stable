@@ -2679,23 +2679,35 @@ bool RsaCheckEx()
 }
 bool RsaCheck()
 {
-	RSA *rsa;
+	int ret = 0;
+	RSA *rsa = NULL;
+	BIGNUM *e = NULL;
 	K *priv_key, *pub_key;
 	BIO *bio;
 	char errbuf[MAX_SIZE];
 	UINT size = 0;
-	UINT bit = 32;
-	// Validate arguments
+	UINT bit = RSA_KEY_SIZE;
+
+	e = BN_new();
+	ret = BN_set_word(e, RSA_F4);
+	if (ret == 0)
+	{
+		BN_free(e);
+		Debug("BN_set_word: err=%s\n", ERR_error_string(ERR_get_error(), errbuf));
+		return false;
+	}
 
 	// Key generation
 	Lock(openssl_lock);
 	{
-		rsa = RSA_generate_key(bit, RSA_F4, NULL, NULL);
+		rsa = RSA_new();
+		ret = RSA_generate_key_ex(rsa, bit, e, NULL);
+		BN_free(e);
 	}
 	Unlock(openssl_lock);
-	if (rsa == NULL)
+	if (ret == 0)
 	{
-		Debug("RSA_generate_key: err=%s\n", ERR_error_string(ERR_get_error(), errbuf));
+		Debug("RSA_generate_key_ex: err=%s\n", ERR_error_string(ERR_get_error(), errbuf));
 		return false;
 	}
 
