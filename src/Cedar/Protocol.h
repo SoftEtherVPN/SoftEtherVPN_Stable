@@ -313,5 +313,4 @@ bool TryGetParentCertFromCertList(LIST *o, X *x, LIST *found_chain);
 bool DownloadAndSaveIntermediateCertificatesIfNecessary(X *x);
 bool RunHook(CEDAR* c,char* name, char* args);
 
-
 #endif	// PROTOCOL_H
