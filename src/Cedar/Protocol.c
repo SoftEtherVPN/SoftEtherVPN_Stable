@@ -3352,7 +3352,20 @@ bool ServerAccept(CONNECTION *c)
 		// Discard the user list cache
 		DeleteAllUserListCache(hub->UserList);
 
-
+		//Run before session begin hook script
+		{
+			char hookArgs[256];	
+			sprintf(hookArgs,"--username %s --remoteip %s",username,s->ClientIP);
+			if(!RunHook(c->Cedar, "before_session_begin.sh" , hookArgs))
+			{
+				Unlock(hub->lock);
+				ReleaseHub(hub);
+				c->Err = ERR_INTERNAL_ERROR;
+				error_detail = "ERR_INTERNAL_ERROR";
+				goto CLEANUP;
+			}
+		}
+		
 		// Main routine of the session
 		Debug("SessionMain()\n");
 		s->NumLoginIncrementUserObject = loggedin_user_object;
@@ -3360,7 +3373,20 @@ bool ServerAccept(CONNECTION *c)
 		s->NumLoginIncrementTick = Tick64() + (UINT64)NUM_LOGIN_INCREMENT_INTERVAL;
 		SessionMain(s);
 
-
+		//Run after session end hook script
+		{
+			char hookArgs[256];
+			sprintf(hookArgs,"--username %s --remoteip %s",username,s->ClientIP);
+			if(!RunHook(c->Cedar, "after_session_end.sh" , hookArgs))
+			{
+				Unlock(hub->lock);
+				ReleaseHub(hub);
+				c->Err = ERR_INTERNAL_ERROR;
+				error_detail = "ERR_INTERNAL_ERROR";
+				goto CLEANUP;
+			}
+		}
+		
 		// Discard the user list cache
 		DeleteAllUserListCache(hub->UserList);
 

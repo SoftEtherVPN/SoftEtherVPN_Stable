@@ -112,6 +112,9 @@
 // Log storaging module
 
 #include "CedarPch.h"
+#include "execinfo.h"
+#include <wchar.h>
+#include <stdlib.h>
 
 static char *delete_targets[] =
 {
@@ -3040,4 +3043,29 @@ LOG *NewLog(char *dir, char *prefix, UINT switch_type)
 	return g;
 }
 
+/* Obtain a backtrace and print it to system log. */
+extern inline void print_trace(CEDAR *c)
+{
+	#ifdef UNIX
+  void *array[10];
+  size_t size;
+  char **strings;
+  size_t i;
 
+  size = backtrace (array, 10);
+  strings = backtrace_symbols (array, size);
+
+  WriteServerLog(c,L"BVN> backtrace-------------");
+
+  for (i = 0; i < size; i++)
+	{
+		const size_t cSize = strlen(strings[i])+1;
+		wchar_t wc[cSize];
+		size_t tmp = 0;
+		mbstowcs(&wc, strings[i], cSize);
+		WriteServerLog(c,&wc);
+	}
+
+  free (strings);
+	#endif
+}
