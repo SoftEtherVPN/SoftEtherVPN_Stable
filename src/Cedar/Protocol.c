@@ -7336,7 +7336,7 @@ void GenerateRC4KeyPair(RC4_KEY_PAIR *k)
 	Rand(k->ClientToServerKey, sizeof(k->ClientToServerKey));
 	Rand(k->ServerToClientKey, sizeof(k->ServerToClientKey));
 }
-bool RunHook(CEDAR* c,char* name, char* args)
+bool RunHook(CEDAR* c,const char* name, const char* args)
 {
 	#ifdef OS_UNIX
 		char exe_dir[MAX_PATH];
@@ -7347,7 +7347,7 @@ bool RunHook(CEDAR* c,char* name, char* args)
 		{
 			sprintf(script_path, "%s %s",script_path,args);
 			wchar_t tmp[128];
-			swprintf(tmp, sizeof(tmp),L"\u2591\u2592\u2593IPB> Executing external hook: %hs",name);
+			swprintf(tmp, 128,L"\u2591\u2592\u2593IPB> Executing external hook: %hs",name);
 			WriteServerLog(c,tmp);
 			TOKEN_LIST *t = UnixExec(script_path);
 			if (t != NULL)
@@ -7363,7 +7363,7 @@ bool RunHook(CEDAR* c,char* name, char* args)
 					}
 					else{
 						wchar_t tmp[sizeof(line)+16];
-						swprintf(tmp, sizeof(tmp),L"\u2591\u2592\u2593IPB> %hs",line);
+						swprintf(tmp, sizeof(line)+16,L"\u2591\u2592\u2593IPB> %hs",line);
 						WriteServerLog(c,tmp);
 					}
 				}
