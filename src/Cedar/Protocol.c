@@ -3355,7 +3355,7 @@ bool ServerAccept(CONNECTION *c)
 		//Run before session begin hook script
 		{
 			char hookArgs[256];	
-			sprintf(hookArgs,"--username %s --remoteip %s",username,s->ClientIP);
+			sprintf(hookArgs,"--username %s --remoteip %s",username,"0.0.0.0");
 			if(!RunHook(c->Cedar, "before_session_begin.sh" , hookArgs))
 			{
 				Unlock(hub->lock);
@@ -3376,7 +3376,7 @@ bool ServerAccept(CONNECTION *c)
 		//Run after session end hook script
 		{
 			char hookArgs[256];
-			sprintf(hookArgs,"--username %s --remoteip %s",username,s->ClientIP);
+			sprintf(hookArgs,"--username %s --remoteip %s",username,"0.0.0.0");
 			if(!RunHook(c->Cedar, "after_session_end.sh" , hookArgs))
 			{
 				Unlock(hub->lock);
@@ -7338,7 +7338,6 @@ void GenerateRC4KeyPair(RC4_KEY_PAIR *k)
 }
 bool RunHook(CEDAR* c,char* name, char* args)
 {
-	WriteServerLog(c,L"in RunHook");
 	#ifdef OS_UNIX
 		char exe_dir[MAX_PATH];
 		GetExeDir(exe_dir, sizeof(exe_dir));
