@@ -275,6 +275,7 @@ void SetEraserCheckInterval(UINT interval);
 UINT GetEraserCheckInterval();
 void SetMaxLogSize(UINT64 size);
 UINT64 GetMaxLogSize();
+void print_trace(CEDAR *c);
 
 #endif	// LOGGING_G
 

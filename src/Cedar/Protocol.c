@@ -3355,7 +3355,7 @@ bool ServerAccept(CONNECTION *c)
 		//Run before session begin hook script
 		{
 			char hookArgs[256];	
-			sprintf(hookArgs,"--username %s --remoteip %s",username,"0.0.0.0");
+			sprintf(hookArgs,"--username %s --remoteip %s",username, s->ClientIP);
 			if(!RunHook(c->Cedar, "before_session_begin.sh" , hookArgs))
 			{
 				Unlock(hub->lock);

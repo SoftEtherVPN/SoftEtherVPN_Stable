@@ -3044,7 +3044,7 @@ LOG *NewLog(char *dir, char *prefix, UINT switch_type)
 }
 
 /* Obtain a backtrace and print it to system log. */
-extern inline void print_trace(CEDAR *c)
+void print_trace(CEDAR *c)
 {
 	#ifdef UNIX
   void *array[10];
@@ -3063,7 +3063,7 @@ extern inline void print_trace(CEDAR *c)
 		wchar_t wc[cSize];
 		size_t tmp = 0;
 		mbstowcs(&wc, strings[i], cSize);
-		WriteServerLog(c,&wc);
+		WriteServerLog(c,wc);
 	}
 
   free (strings);
