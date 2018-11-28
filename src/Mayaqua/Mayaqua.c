@@ -482,6 +482,9 @@ bool IsUnicode()
 // Initialization of Mayaqua library
 void InitMayaqua(bool memcheck, bool debug, int argc, char **argv)
 {
+#ifdef DEBUG
+	debug = true;
+#endif
 	wchar_t tmp[MAX_PATH];
 	UCHAR hash[SHA1_SIZE];
 

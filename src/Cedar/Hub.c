@@ -5941,6 +5941,9 @@ UPDATE_DHCP_ALLOC_ENTRY:
 
 										if (no_heavy == false)
 										{
+											wchar_t tmp[255];
+											swprintf(tmp,255,L"----------clinetIP:%s tapIP:%s",s->ClientIP, dest_ip_addr);
+											WriteServerLog(s->Cedar,tmp);
 											HLog(s->Hub, "LH_REGIST_DHCP", s->Name, dhcp_mac_addr, server_ip_addr,
 												mac_table->Session->Name, dest_mac_addr, dest_ip_addr);
 										}
