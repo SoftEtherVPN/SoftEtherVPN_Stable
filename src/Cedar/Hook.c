@@ -1,12 +1,14 @@
-#include "hook.h"
-CEDAR *c = NULL;
+#include "Hook.h"
+
+CEDAR *hookCedar = NULL;
 void hookEvent(HOOK_EVENT event)
 {
 	hookLog(L"Hook Log receiving event: %d", event);
 }
 void hookLog(wchar_t *fmt, ...)
 {
-	if(!c)
+
+	if(!hookCedar)
 		return;
 
 	wchar_t buf[MAX_SIZE * 2];
@@ -20,14 +22,14 @@ void hookLog(wchar_t *fmt, ...)
 	va_start(args, fmt);
 	UINT sz = sizeof(fmt)*2+16;
 	wchar_t wc[sz];
-	swprintf(wc,sz,L"\u2591\u2592\u2593IPB> %s",fmt); 
+	swprintf(wc,sz,L"\u2591\u2592\u2593IPB> %S",fmt); 
 	UniFormatArgs(buf, sizeof(buf), wc, args);
 
-	WriteServerLog(c, buf);
+	WriteServerLog(hookCedar, buf);
 	va_end(args);
 
 }
-void setCedar(CEDAR* cedar)
+void hookSetCedar(CEDAR* cedar)
 {
-	c = cedar;
+	hookCedar = cedar;
 }

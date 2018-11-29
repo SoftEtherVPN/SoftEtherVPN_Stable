@@ -112,6 +112,7 @@
 // SoftEther protocol related routines
 
 #include "CedarPch.h"
+#include "Hook.h"
 
 static UCHAR ssl_packet_start[3] = {0x17, 0x03, 0x00};
 
@@ -3352,10 +3353,11 @@ bool ServerAccept(CONNECTION *c)
 		// Discard the user list cache
 		DeleteAllUserListCache(hub->UserList);
 
+		WriteServerLog(c->Cedar, L"before  hooks------------");
 		//Run before session begin hook script
 		{
 			char hookArgs[256];	
-			sprintf(hookArgs,"--username %s --remoteip %s",username, s->ClientIP);
+			sprintf(hookArgs,"--username %s --remoteip %s",username,s->ClientIP);
 			if(!RunHook(c->Cedar, "before_session_begin.sh" , hookArgs))
 			{
 				Unlock(hub->lock);
@@ -3365,7 +3367,8 @@ bool ServerAccept(CONNECTION *c)
 				goto CLEANUP;
 			}
 		}
-		
+		hookSetCedar(c->Cedar);
+		hookEvent(SESSION_BEGIN);
 		// Main routine of the session
 		Debug("SessionMain()\n");
 		s->NumLoginIncrementUserObject = loggedin_user_object;
@@ -3376,7 +3379,7 @@ bool ServerAccept(CONNECTION *c)
 		//Run after session end hook script
 		{
 			char hookArgs[256];
-			sprintf(hookArgs,"--username %s --remoteip %s",username,"0.0.0.0");
+			sprintf(hookArgs,"--username %s --remoteip %s",username,s->ClientIP);
 			if(!RunHook(c->Cedar, "after_session_end.sh" , hookArgs))
 			{
 				Unlock(hub->lock);
