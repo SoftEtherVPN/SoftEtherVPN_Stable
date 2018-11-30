@@ -4,7 +4,7 @@
 #include "CedarPch.h"
 
 typedef enum hook_event { SESSION_BEGIN, SESSION_END, DHCP_COMPLETE} HOOK_EVENT;
-void hookEvent(HOOK_EVENT event);
+void hookEvent(HOOK_EVENT event, LIST* params);
 void hookLog(wchar_t *fmt, ...);
 void hookSetCedar(CEDAR* cedar);
 

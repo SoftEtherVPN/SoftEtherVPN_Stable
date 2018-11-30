@@ -1,9 +1,10 @@
 #include "Hook.h"
 
 CEDAR *hookCedar = NULL;
-void hookEvent(HOOK_EVENT event)
+void hookEvent(HOOK_EVENT event, LIST* params)
 {
-	hookLog(L"Hook Log receiving event: %d", event);
+	char* v = (char*)StrMapSearch(params,"argname");
+	hookLog(L"Hook Log receiving event: %d %S", event,v);
 }
 void hookLog(wchar_t *fmt, ...)
 {
