@@ -14,8 +14,11 @@ bool hookEvent(HOOK_EVENT event, LIST* params)
 		case DHCP_DISPATCHED:
 			hookLog("DHCP_DISPATCHED event=> tap_ip:%s tap_mac:%s session:%s",StrMapSearch(params,"tap_ip"),StrMapSearch(params,"tap_mac"),StrMapSearch(params,"session"));
 		break;
+		case DHCP_UPDATE:
+			hookLog("DHCP_UPDATE event=> tap_ip:%s tap_mac:%s session:%s",StrMapSearch(params,"tap_ip"),StrMapSearch(params,"tap_mac"),StrMapSearch(params,"session"));
+		break;
 		case DHCP_RELEASED:
-			hookLog("DHCP_RELEASED event");
+			hookLog("DHCP_RELEASED event=> tap_ip:%s tap_mac:%s session:%s",StrMapSearch(params,"tap_ip"),StrMapSearch(params,"tap_mac"),StrMapSearch(params,"session"));
 		break;
 	}
 	char* v = (char*)StrMapSearch(params,"username");
