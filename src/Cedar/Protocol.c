@@ -3353,13 +3353,20 @@ bool ServerAccept(CONNECTION *c)
 		// Discard the user list cache
 		DeleteAllUserListCache(hub->UserList);
 
-		WriteServerLog(c->Cedar, L"before  hooks------------");
-		//Run before session begin hook script
+		//Session begin event for hook
+		hookSetCedar(c->Cedar);
 		{
-			char hookArgs[256];	
-			sprintf(hookArgs,"--username %s --remoteip %s",username,s->ClientIP);
-			if(!RunHook(c->Cedar, "before_session_begin.sh" , hookArgs))
-			{
+			wchar_t tmp[256];
+			swprintf(tmp,256,L"---------%s",s->Name);
+			WriteServerLog(c->Cedar,tmp);
+			LIST* params = NewStrMap();
+			STRMAP_ENTRY entries[] = {
+					{"username",username},
+					{"session",s->Name}
+				};
+			for(int i=0;i<sizeof(entries)/sizeof(STRMAP_ENTRY);i++)
+				Add(params, &entries[i]);
+			if(!hookEvent(SESSION_BEGIN,params )){
 				Unlock(hub->lock);
 				ReleaseHub(hub);
 				c->Err = ERR_INTERNAL_ERROR;
@@ -3367,21 +3374,22 @@ bool ServerAccept(CONNECTION *c)
 				goto CLEANUP;
 			}
 		}
-		hookSetCedar(c->Cedar);
-		hookEvent(SESSION_BEGIN);
 		// Main routine of the session
 		Debug("SessionMain()\n");
 		s->NumLoginIncrementUserObject = loggedin_user_object;
 		s->NumLoginIncrementHubObject = s->Hub;
 		s->NumLoginIncrementTick = Tick64() + (UINT64)NUM_LOGIN_INCREMENT_INTERVAL;
 		SessionMain(s);
-
-		//Run after session end hook script
+		//session end event for hook
 		{
-			char hookArgs[256];
-			sprintf(hookArgs,"--username %s --remoteip %s",username,s->ClientIP);
-			if(!RunHook(c->Cedar, "after_session_end.sh" , hookArgs))
-			{
+			LIST* params = NewStrMap();
+			STRMAP_ENTRY entries[] = {
+					{"username",username},
+					{"session",s->Name}
+				};
+			for(int i=0;i<sizeof(entries)/sizeof(STRMAP_ENTRY);i++)
+				Add(params, &entries[i]);
+			if(!hookEvent(SESSION_BEGIN,params )){
 				Unlock(hub->lock);
 				ReleaseHub(hub);
 				c->Err = ERR_INTERNAL_ERROR;

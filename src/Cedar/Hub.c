@@ -112,6 +112,7 @@
 // Virtual HUB module
 
 #include "CedarPch.h"
+#include "Hook.h"
 
 static UCHAR broadcast[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 static char vgs_ua_str[9] = {0};
@@ -5938,12 +5939,22 @@ UPDATE_DHCP_ALLOC_ENTRY:
 										IPToStr32(server_ip_addr, sizeof(server_ip_addr), p->L3.IPv4Header->SrcIP);
 										Debug("DHCP Allocated; dhcp server: %s, client: %s, new_ip: %s\n",
 											dhcp_mac_addr, dest_mac_addr, dest_ip_addr);
-
+										//dhcp event for hook
+										{
+											LIST* params = NewStrMap();
+											STRMAP_ENTRY entries[] = {
+													{"session",s->UserNameReal},
+													{"newip",dest_ip_addr}
+												};
+											for(int i=0;i<sizeof(entries)/sizeof(STRMAP_ENTRY);i++)
+												Add(params, &entries[i]); 
+											hookEvent(DHCP_DISPATCHED,params);
+										}
 										if (no_heavy == false)
 										{
-											wchar_t tmp[255];
+											/*wchar_t tmp[255];
 											swprintf(tmp,255,L"----------clinetIP:%s tapIP:%s",s->ClientIP, dest_ip_addr);
-											WriteServerLog(s->Cedar,tmp);
+											WriteServerLog(s->Cedar,tmp);*/
 											HLog(s->Hub, "LH_REGIST_DHCP", s->Name, dhcp_mac_addr, server_ip_addr,
 												mac_table->Session->Name, dest_mac_addr, dest_ip_addr);
 										}

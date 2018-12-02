@@ -1,12 +1,28 @@
 #include "Hook.h"
 
 CEDAR *hookCedar = NULL;
-void hookEvent(HOOK_EVENT event, LIST* params)
+bool hookEvent(HOOK_EVENT event, LIST* params)
 {
-	char* v = (char*)StrMapSearch(params,"argname");
-	hookLog(L"Hook Log receiving event: %d %S", event,v);
+	switch(event)
+	{
+		case SESSION_BEGIN:
+			hookLog("SESSION_START event=> username:%s session:%s",StrMapSearch(params,"username"), StrMapSearch(params,"session"));
+		break;
+		case SESSION_END:
+			hookLog("SESSION_END event=> username:%s session:%s",StrMapSearch(params,"username"), StrMapSearch(params,"session"));
+		break;
+		case DHCP_DISPATCHED:
+			hookLog("DHCP_DISPATCHED event=> session:%s",StrMapSearch(params,"session"));
+		break;
+		case DHCP_RELEASED:
+			hookLog("DHCP_RELEASED event");
+		break;
+	}
+	char* v = (char*)StrMapSearch(params,"username");
+	hookLog("Hook Log receiving event: %d %s", event,v);
+	return true;
 }
-void hookLog(wchar_t *fmt, ...)
+void hookLog(char *fmt, ...)
 {
 
 	if(!hookCedar)
@@ -18,19 +34,17 @@ void hookLog(wchar_t *fmt, ...)
 		return;
 	}
 
-	UINT sz = sizeof(fmt)*2+16;
-	wchar_t wc[sz];
-	
-	wcscpy(wc,L"\u2591\u2592\u2593IPB> ");
-	wcscat(wc,fmt);
-	
-	wchar_t buf[MAX_SIZE * 2];
+	char buf[MAX_SIZE];
 	va_list args;
 	va_start(args, fmt);
-	UniFormatArgs(buf, sizeof(buf), wc, args);
-	WriteServerLog(hookCedar, buf);
+	FormatArgs(buf,sizeof(buf),fmt,args);
 	va_end(args);
-
+	
+	wchar_t wc[MAX_SIZE*2];
+	
+	swprintf(wc,sizeof(wc),L"\u2591\u2592\u2593IPB> %s", buf); 
+	WriteServerLog(hookCedar, wc);
+	
 }
 void hookSetCedar(CEDAR* cedar)
 {
