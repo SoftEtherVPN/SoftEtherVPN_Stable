@@ -6,13 +6,13 @@ bool hookEvent(HOOK_EVENT event, LIST* params)
 	switch(event)
 	{
 		case SESSION_BEGIN:
-			hookLog("SESSION_START event=> username:%s session:%s",StrMapSearch(params,"username"), StrMapSearch(params,"session"));
+			hookLog("SESSION_START event=> username:%s session:%s clientip:%s",StrMapSearch(params,"username"), StrMapSearch(params,"session"), StrMapSearch(params,"clientip"));
 		break;
 		case SESSION_END:
 			hookLog("SESSION_END event=> username:%s session:%s",StrMapSearch(params,"username"), StrMapSearch(params,"session"));
 		break;
 		case DHCP_DISPATCHED:
-			hookLog("DHCP_DISPATCHED event=> session:%s",StrMapSearch(params,"session"));
+			hookLog("DHCP_DISPATCHED event=> tap_ip:%s tap_mac:%s session:%s",StrMapSearch(params,"tap_ip"),StrMapSearch(params,"tap_mac"),StrMapSearch(params,"session"));
 		break;
 		case DHCP_RELEASED:
 			hookLog("DHCP_RELEASED event");

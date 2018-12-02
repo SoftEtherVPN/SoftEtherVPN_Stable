@@ -5941,10 +5941,12 @@ UPDATE_DHCP_ALLOC_ENTRY:
 											dhcp_mac_addr, dest_mac_addr, dest_ip_addr);
 										//dhcp event for hook
 										{
+
 											LIST* params = NewStrMap();
 											STRMAP_ENTRY entries[] = {
-													{"session",s->UserNameReal},
-													{"newip",dest_ip_addr}
+													{"session",mac_table->Session->Name},
+													{"tap_ip",dest_ip_addr},
+													{"tap_mac",dest_mac_addr}
 												};
 											for(int i=0;i<sizeof(entries)/sizeof(STRMAP_ENTRY);i++)
 												Add(params, &entries[i]); 
