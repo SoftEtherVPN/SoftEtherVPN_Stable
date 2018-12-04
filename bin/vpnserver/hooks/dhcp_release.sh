@@ -1,22 +1,21 @@
 #!/bin/bash
 #echo "SE_ERROR";
 
-username=""
-meta=""
+tapip=""
+tapmac=""
 while [ "$1" != "" ]; do
 	case $1 in
-		-u | --username )
+		--tapip )
 			shift
-			username=$1
+			tapip=$1
 			;;
-		-m | --meta )
+		--tapmac )
 			shift
-			meta=$1
+			tapmac=$1
 			;;
 		* )
 		exit 1
 	esac
 	shift
 done
-echo $username
-echo "fdafda"
+echo 'ip:' $tapip 'mac:' $tapmac
