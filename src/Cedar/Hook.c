@@ -13,25 +13,19 @@ LIST* Records =NULL;
 
 Record* searchBySessionName(char* name)
 {
-	WriteServerLog(hookCedar,L"sbsn0");
 	if(Records == NULL)
 		return NULL;
-	WriteServerLog(hookCedar,L"sbsn1");
 	for (int i = 0;i < LIST_NUM(Records);i++)
 	{
-		WriteServerLog(hookCedar,L"sbsn2");
 		Record *r = LIST_DATA(Records, i);
-		WriteServerLog(hookCedar,L"sbsn3");
 
 		hookLog("%s %s %s %s",r->username, r->sessionName, r->tapIp, r->tapMac);
 		
 		if (StrCmp(r->sessionName, name) == 0)
 		{
-			WriteServerLog(hookCedar,L"sbsn4");
 			return r;
 		}
 	}
-	WriteServerLog(hookCedar,L"sbsn5");
 	return NULL;
 }
 
