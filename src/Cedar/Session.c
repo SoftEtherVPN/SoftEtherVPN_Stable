@@ -292,7 +292,7 @@ void SessionMain(SESSION *s)
 	lock_receive_blocks_queue = s->LinkModeServer;
 
 	now = Tick64();
-	WriteServerLog(s->Cedar,L"------------------------>before session whilte loop");
+
 	while (true)
 	{
 		Zero(&t, sizeof(t));

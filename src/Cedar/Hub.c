@@ -5964,7 +5964,6 @@ UPDATE_DHCP_ALLOC_ENTRY:
 							}
 							else
 							{
-								WriteServerLog(s->Cedar, L"----------dhcp else");
 								//dhcp event for hook
 								{
 									IP ip;
@@ -6060,20 +6059,6 @@ void DeleteExpiredIpTableEntry(LIST *o)
 	for (i = 0;i < LIST_NUM(o2);i++)
 	{
 		IP_TABLE_ENTRY *e = LIST_DATA(o2, i);
-		//dhcp release ip event for hook
-		{
-			LIST* params = NewStrMap();
-			char cip[64];
-			IPToStr(cip,64,&(e->Ip));
-			STRMAP_ENTRY entries[] = {
-					{"session",e->Session->Name},
-					{"tap_ip", cip},
-					{"tap_mac",e->MacAddress}
-				};
-			for(int i=0;i<sizeof(entries)/sizeof(STRMAP_ENTRY);i++)
-				Add(params, &entries[i]); 
-			hookEvent(DHCP_RELEASE,params);
-		}
 		Delete(o, e);
 		Free(e);
 	}

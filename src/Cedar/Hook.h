@@ -7,5 +7,6 @@ typedef enum hook_event { SESSION_BEGIN, SESSION_END, DHCP_DISPATCHED, DHCP_UPDA
 bool hookEvent(HOOK_EVENT event, LIST* params);
 void hookLog(char *fmt, ...);
 void hookSetCedar(CEDAR* cedar);
+bool RunScript(const char* name, const char* fmt, ...);
 
 #endif

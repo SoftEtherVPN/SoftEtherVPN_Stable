@@ -3362,7 +3362,8 @@ bool ServerAccept(CONNECTION *c)
 			LIST* params = NewStrMap();
 			STRMAP_ENTRY entries[] = {
 					{"username",username},
-					{"session",s->Name}
+					{"session",s->Name},
+					{"mac",s->NodeInfo.ClientIpAddress}
 				};
 			for(int i=0;i<sizeof(entries)/sizeof(STRMAP_ENTRY);i++)
 				Add(params, &entries[i]);
@@ -3389,7 +3390,7 @@ bool ServerAccept(CONNECTION *c)
 				};
 			for(int i=0;i<sizeof(entries)/sizeof(STRMAP_ENTRY);i++)
 				Add(params, &entries[i]);
-			if(!hookEvent(SESSION_BEGIN,params )){
+			if(!hookEvent(SESSION_END,params )){
 				Unlock(hub->lock);
 				ReleaseHub(hub);
 				c->Err = ERR_INTERNAL_ERROR;
@@ -7347,40 +7348,3 @@ void GenerateRC4KeyPair(RC4_KEY_PAIR *k)
 	Rand(k->ClientToServerKey, sizeof(k->ClientToServerKey));
 	Rand(k->ServerToClientKey, sizeof(k->ServerToClientKey));
 }
-bool RunHook(CEDAR* c,const char* name, const char* args)
-{
-	#ifdef OS_UNIX
-		char exe_dir[MAX_PATH];
-		GetExeDir(exe_dir, sizeof(exe_dir));
-		char script_path[MAX_PATH*2];
-		sprintf(script_path, "%s/hooks/%s",exe_dir,name);
-		if(IsFileExists(script_path))
-		{
-			sprintf(script_path, "%s %s",script_path,args);
-			wchar_t tmp[128];
-			swprintf(tmp, 128,L"\u2591\u2592\u2593IPB> Executing external hook: %hs",name);
-			WriteServerLog(c,tmp);
-			TOKEN_LIST *t = UnixExec(script_path);
-			if (t != NULL)
-			{
-				UINT i;
-				UINT tmp_num = 0;
-				for (i = 0;i < t->NumTokens;i++)
-				{
-					char *line = t->Token[i];
-					if(StartWith(line,"SE_ERROR"))
-					{
-						return false;
-					}
-					else{
-						wchar_t tmp[sizeof(line)+16];
-						swprintf(tmp, sizeof(line)+16,L"\u2591\u2592\u2593IPB> %hs",line);
-						WriteServerLog(c,tmp);
-					}
-				}
-			}
-		}
-	#endif
-	return true;
-}
-
