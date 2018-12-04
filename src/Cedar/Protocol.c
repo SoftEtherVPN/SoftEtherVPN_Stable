@@ -3356,14 +3356,11 @@ bool ServerAccept(CONNECTION *c)
 		//Session begin event for hook
 		hookSetCedar(c->Cedar);
 		{
-			wchar_t tmp[256];
-			swprintf(tmp,256,L"---------%s",s->Name);
-			WriteServerLog(c->Cedar,tmp);
 			LIST* params = NewStrMap();
 			STRMAP_ENTRY entries[] = {
 					{"username",username},
 					{"session",s->Name},
-					{"mac",s->NodeInfo.ClientIpAddress}
+					{"publicip","0.0.0.0"}
 				};
 			for(int i=0;i<sizeof(entries)/sizeof(STRMAP_ENTRY);i++)
 				Add(params, &entries[i]);

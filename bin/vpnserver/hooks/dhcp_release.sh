@@ -19,3 +19,4 @@ while [ "$1" != "" ]; do
 	shift
 done
 echo 'ip:' $tapip 'mac:' $tapmac
+iptables -t nat -D POSTROUTING -s $tapip -j SNAT --to 164.132.4.206

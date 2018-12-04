@@ -85,7 +85,7 @@ void updateRecord(Record* r){
 
 bool onSessionBegin(LIST* params)
 {
-	hookLog("SESSION_START event=> username:%s session:%s clientip:%s",StrMapSearch(params,"username"), StrMapSearch(params,"session"), StrMapSearch(params,"clientip"));
+	hookLog("SESSION_START event=> username:%s session:%s publicip:%s",StrMapSearch(params,"username"), StrMapSearch(params,"session"), StrMapSearch(params,"publicip"));
 
 	//Record r = {StrMapSearch(params,"username"),StrMapSearch(params, "session"),"",""};
 	Record r;
