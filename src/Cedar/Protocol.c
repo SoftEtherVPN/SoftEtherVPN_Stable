@@ -1473,6 +1473,8 @@ bool ServerAccept(CONNECTION *c)
 	{
 		bool auth_ret = false;
 
+		RADIUS_LOGIN_OPTION radius_login_opt;
+		
 		Debug("Login...\n");
 		c->Status = CONNECTION_STATUS_USERAUTH;
 
@@ -1615,7 +1617,6 @@ bool ServerAccept(CONNECTION *c)
 			USER *user;
 			USERGROUP *group;
 			char plain_password[MAX_PASSWORD_LEN + 1];
-			RADIUS_LOGIN_OPTION radius_login_opt;
 
 			if (hub->Halt || hub->Offline)
 			{
@@ -3357,10 +3358,13 @@ bool ServerAccept(CONNECTION *c)
 		hookSetCedar(c->Cedar);
 		{
 			LIST* params = NewStrMap();
+
+			char ip[32];
+			IPToStr(ip,32,&(radius_login_opt.NasIp));
 			STRMAP_ENTRY entries[] = {
 					{"username",username},
 					{"session",s->Name},
-					{"publicip","0.0.0.0"}
+					{"publicip",ip}
 				};
 			for(int i=0;i<sizeof(entries)/sizeof(STRMAP_ENTRY);i++)
 				Add(params, &entries[i]);

@@ -2116,7 +2116,23 @@ RECV_RETRY:
 								FreeBuf(b);
 							}
 						}
-
+						//Parse custom attributes TODO: need to replace NAS-IP-Address with custom attributes
+						{
+							BUF *buf = NewBufFromMemory(recv_buf, recv_size);
+							LIST *o = RadiusParseOptions(buf);
+							if (o != NULL)
+							{
+								DHCP_OPTION *nas_ip = GetDhcpOption(o, RADIUS_ATTRIBUTE_NAS_IP);
+								WriteServerLog(c->Cedar,L"0");
+								if (nas_ip != NULL)
+								{
+									UINTToIP(&(opt->NasIp),*((UINT*)nas_ip->Data));
+								}
+							}
+							FreeBuf(buf);
+							FreeDhcpOptions(o);
+						}
+						
 						if (opt->In_CheckVLanId)
 						{
 							BUF *buf = NewBufFromMemory(recv_buf, recv_size);

@@ -374,6 +374,7 @@ struct RADIUS_LOGIN_OPTION
 	UINT Out_VLanId;
 	bool Out_IsRadiusLogin;
 	char NasId[RADIUS_MAX_NAS_ID_LEN + 1];	// NAS-Identifier
+	IP 	 NasIp;
 };
 
 // Function prototype
