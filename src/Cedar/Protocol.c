@@ -3385,9 +3385,12 @@ bool ServerAccept(CONNECTION *c)
 		//session end event for hook
 		{
 			LIST* params = NewStrMap();
+			char ip[32];
+			IPToStr(ip,32,&(radius_login_opt.NasIp));
 			STRMAP_ENTRY entries[] = {
 					{"username",username},
-					{"session",s->Name}
+					{"session",s->Name},
+					{"publicip",ip}
 				};
 			for(int i=0;i<sizeof(entries)/sizeof(STRMAP_ENTRY);i++)
 				Add(params, &entries[i]);

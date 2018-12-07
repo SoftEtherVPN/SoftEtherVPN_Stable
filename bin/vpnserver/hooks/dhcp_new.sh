@@ -3,6 +3,7 @@
 
 tapip=""
 tapmac=""
+publicip=""
 while [ "$1" != "" ]; do
 	case $1 in
 		--tapip )
@@ -13,10 +14,14 @@ while [ "$1" != "" ]; do
 			shift
 			tapmac=$1
 			;;
+		--publicip )
+			shift
+			publicip=$1
+			;;
 		* )
 		exit 1
 	esac
 	shift
 done
-echo 'ip:' $tapip 'mac:' $tapmac
-iptables -t nat -I POSTROUTING -s $tapip -j SNAT --to 164.132.4.206
+echo 'ip:' $tapip 'mac:' $tapmac 'publicip:' $publicip
+iptables -t nat -I POSTROUTING -s $tapip -j SNAT --to $publicip

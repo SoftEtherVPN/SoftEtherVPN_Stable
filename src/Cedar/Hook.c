@@ -8,6 +8,7 @@ typedef struct Record
 	char sessionName[64];	//unique session name to identify this record
 	char tapIp[64];
 	char tapMac[64];
+	char publicIp[16];
 } Record;
 LIST* Records =NULL;
 
@@ -17,10 +18,7 @@ Record* searchBySessionName(char* name)
 		return NULL;
 	for (int i = 0;i < LIST_NUM(Records);i++)
 	{
-		Record *r = LIST_DATA(Records, i);
-
-		hookLog("%s %s %s %s",r->username, r->sessionName, r->tapIp, r->tapMac);
-		
+		Record *r = LIST_DATA(Records, i);	
 		if (StrCmp(r->sessionName, name) == 0)
 		{
 			return r;
@@ -46,9 +44,7 @@ Record* searchByTapMac(char* mac)
 	return NULL;
 }
 void addRecord(Record* r)
-{
-	hookLog("%s %s %s %s",r->username, r->sessionName, r->tapIp, r->tapMac);
-	
+{	
 	if(Records==NULL)
 		Records = NewList(NULL);
 
@@ -85,18 +81,19 @@ bool onSessionBegin(LIST* params)
 	Record r;
 	StrCpy(r.username,sizeof(r.username),StrMapSearch(params,"username"));
 	StrCpy(r.sessionName,sizeof(r.sessionName),StrMapSearch(params,"session"));
+	StrCpy(r.publicIp,sizeof(r.publicIp),StrMapSearch(params,"publicip"));
 	addRecord(&r);
 	return true;
 }
 
 bool onSessionEnd(LIST* params)
 {
-	hookLog("SESSION_END event=> username:%s session:%s",StrMapSearch(params,"username"), StrMapSearch(params,"session"));
+	hookLog("SESSION_END event=> username:%s session:%s publicip:%s",StrMapSearch(params,"username"), StrMapSearch(params,"session"),StrMapSearch(params,"publicip"));
 	Record* r = searchBySessionName(StrMapSearch(params,"session"));
 	if(r == NULL)
 		return false;
 
-	RunScript("dhcp_release.sh", "--tapip %s --tapmac %s", r->tapIp, r->tapMac);
+	RunScript("dhcp_release.sh", "--tapip %s --tapmac %s --publicip %s", r->tapIp, r->tapMac, r->publicIp);
 	removeRecord(r);
 	return true;
 }
@@ -112,7 +109,7 @@ bool onDHCPDispatched(LIST* params)
 	StrCpy(r->tapIp, sizeof(r->tapIp), StrMapSearch(params,"tap_ip"));
 	StrCpy(r->tapMac, sizeof(r->tapMac), StrMapSearch(params,"tap_mac"));
 
-	RunScript("dhcp_new.sh", "--tapip %s --tapmac %s", r->tapIp, r->tapMac);
+	RunScript("dhcp_new.sh", "--tapip %s --tapmac %s --publicip %s", r->tapIp, r->tapMac, r->publicIp);
 	return true;
 }
 
@@ -158,9 +155,6 @@ bool hookEvent(HOOK_EVENT event, LIST* params)
 		break;
 		case DHCP_UPDATE:
 			return onDHCPUpdate(params);
-		break;
-		case DHCP_RELEASED:
-			hookLog("DHCP_RELEASED event=> tap_ip:%s tap_mac:%s session:%s",StrMapSearch(params,"tap_ip"),StrMapSearch(params,"tap_mac"),StrMapSearch(params,"session"));
 		break;
 	}
 
