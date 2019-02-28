@@ -6,7 +6,7 @@
 // Copyright (c) Daiyuu Nobori.
 // Copyright (c) SoftEther VPN Project, University of Tsukuba, Japan.
 // Copyright (c) SoftEther Corporation.
-Copyright (c) all contributors on SoftEther VPN project in GitHub.
+// Copyright (c) all contributors on SoftEther VPN project in GitHub.
 // 
 // All Rights Reserved.
 // 
