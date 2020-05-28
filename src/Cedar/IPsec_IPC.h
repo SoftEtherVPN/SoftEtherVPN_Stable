@@ -109,7 +109,6 @@
 #define	IPC_ARP_LIFETIME				(3 * 60 * 1000)
 #define	IPC_ARP_GIVEUPTIME				(1 * 1000)
 #define	IPC_DHCP_TIMEOUT				(5 * 1000)
-#define	IPC_DHCP_TIMEOUT_TOTAL_GIVEUP	(20 * 1000)
 #define	IPC_DHCP_MIN_LEASE				5
 #define	IPC_DHCP_DEFAULT_LEASE			3600
 
@@ -166,7 +165,6 @@ struct IPC_PARAM
 	bool BridgeMode;
 	UINT Mss;
 	bool IsL3Mode;
-	bool IsOpenVPN;
 	X *ClientCertificate;
 	UINT Layer;
 };
@@ -263,7 +261,6 @@ DHCPV4_DATA *IPCSendDhcpRequest(IPC *ipc, IP *dest_ip, UINT tran_id, DHCP_OPTION
 BUF *IPCBuildDhcpRequest(IPC *ipc, IP *dest_ip, UINT tran_id, DHCP_OPTION_LIST *opt);
 BUF *IPCBuildDhcpRequestOptions(IPC *ipc, DHCP_OPTION_LIST *opt);
 bool IPCDhcpAllocateIP(IPC *ipc, DHCP_OPTION_LIST *opt, TUBE *discon_poll_tube);
-bool IPCDhcpAllocateIPEx(IPC *ipc, DHCP_OPTION_LIST *opt, TUBE *discon_poll_tube, bool openvpn_compatible);
 bool IPCDhcpRequestInformIP(IPC *ipc, DHCP_OPTION_LIST *opt, TUBE *discon_poll_tube, IP *client_ip);
 void IPCDhcpRenewIP(IPC *ipc, IP *dhcp_server);
 void IPCDhcpFreeIP(IPC *ipc, IP *dhcp_server);
