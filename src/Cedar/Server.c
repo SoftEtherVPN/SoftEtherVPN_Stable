@@ -10916,10 +10916,10 @@ bool SiIsEnterpriseFunctionsRestrictedOnOpenSource(CEDAR *c)
 
 	SiGetCurrentRegion(c, region, sizeof(region));
 
-	if (StrCmpi(region, "JP") == 0 || StrCmpi(region, "CN") == 0)
-	{
-		ret = true;
-	}
+//	if (StrCmpi(region, "JP") == 0 || StrCmpi(region, "CN") == 0)
+//	{
+//		ret = true;
+//	}
 
 	return ret;
 }
